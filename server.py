@@ -1,23 +1,36 @@
 import os
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import threading
 import asyncio
-from flask import Flask
 from bot import main as run_bot
-from threading import Thread
 
-app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return "Telegram Bot is running!", 200
+# Простой HTTP-сервер для keep-alive
+class KeepAliveHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(b"Telegram Bot is running!")
 
-# Запуск бота в фоне
+
+def start_http_server():
+    port = int(os.getenv("PORT", 10000))
+    server_address = ('', port)
+    httpd = HTTPServer(server_address, KeepAliveHandler)
+    print(f"Serving on port {port}")
+    httpd.serve_forever()
+
+
 def start_bot():
     asyncio.run(run_bot())
 
-if __name__ == "__main__":
-    # Запускаем бота в отдельном потоке
-    bot_thread = Thread(target=start_bot)
-    bot_thread.start()
 
-    # Запускаем Flask-сервер
-    app.run(host='0.0.0.0', port=int(os.getenv("PORT", 10000)))
+if __name__ == "__main__":
+    # Запускаем HTTP-сервер в отдельном потоке
+    server_thread = Thread(target=start_http_server)
+    server_thread.daemon = True
+    server_thread.start()
+
+    # Бот запускается в основном потоке
+    start_bot()
