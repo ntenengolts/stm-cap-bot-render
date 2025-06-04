@@ -1,6 +1,6 @@
 import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import threading
+from threading import Thread
 import asyncio
 from bot import main as run_bot
 
