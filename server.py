@@ -2,7 +2,7 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 import asyncio
-from bot import main as run_bot
+from bot import main as run_bot  # async def main()
 
 
 # Простой HTTP-сервер для keep-alive
@@ -22,8 +22,8 @@ def start_http_server():
     httpd.serve_forever()
 
 
-def start_bot():
-    asyncio.run(run_bot())
+async def start_bot():
+    await run_bot()  # Вызываем бота как корутину
 
 
 if __name__ == "__main__":
@@ -32,5 +32,5 @@ if __name__ == "__main__":
     server_thread.daemon = True
     server_thread.start()
 
-    # Бот запускается в основном потоке
-    start_bot()
+    # Основной поток остаётся за ботом
+    asyncio.run(start_bot())
