@@ -1,0 +1,5 @@
+.env
+*.pyc
+__pycache__
+.DS_Store
+stm-cap-bot-33d82026f843.json
