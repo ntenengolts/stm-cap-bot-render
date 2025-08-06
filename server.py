@@ -15,7 +15,7 @@ class KeepAliveHandler(BaseHTTPRequestHandler):
 
 
 def start_http_server():
-    port = int(os.getenv("PORT", 10000))
+    port = int(os.getenv("PORT", 8000))
     server_address = ('', port)
     httpd = HTTPServer(server_address, KeepAliveHandler)
     print(f"Serving on port {port}")
