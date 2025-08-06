@@ -9,9 +9,9 @@ from bot import main as run_bot  # async def main()
 class KeepAliveHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
-        self.send_header("Content-type", "text/html")
+        self.send_header("Content-type", "text/plain; charset=utf-8")
         self.end_headers()
-        self.wfile.write(b"Telegram Bot is running!")
+        self.wfile.write(b"OK: Telegram Bot is running!")
 
 
 def start_http_server():
