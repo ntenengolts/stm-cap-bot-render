@@ -27,6 +27,13 @@ DATA_RANGE = 'БД!A2:C1000'
 ACCESS_RANGE = 'Доступ!A2:C1000'
 MESSAGES_RANGE = 'Сообщения!A2:B100'
 
+# webhook конфиг
+WEBHOOK_PATH = "/webhook"
+WEBHOOK_HOST = os.getenv("WEBHOOK_HOST", "https://your-app.onrender.com")  # заменишь на свой Render URL
+WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
+WEBAPP_HOST = "0.0.0.0"
+WEBAPP_PORT = int(os.getenv("PORT", 8000))  # Render пробрасывает $PORT
+
 _sheets_service = None  # кэш для повторного использования
 
 
@@ -468,10 +475,25 @@ async def send_broadcast(message: Message):
     log_broadcast(message.from_user.id, broadcast_text, success_count)
 
 
-# Запуск
+# запуск через webhook
+async def on_startup(dispatcher: Dispatcher):
+    # ставим webhook
+    await bot.set_webhook(WEBHOOK_URL)
+
+async def on_shutdown(dispatcher: Dispatcher):
+    # снимаем webhook
+    await bot.delete_webhook()
+
 async def main():
-    print("Бот запущен!")
-    await dp.start_polling(bot)
+    print("Бот запущен на webhook!")
+    await dp.start_webhook(
+        bot,
+        webhook_path=WEBHOOK_PATH,
+        on_startup=on_startup,
+        on_shutdown=on_shutdown,
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT,
+    )
 
 if __name__ == "__main__":
     asyncio.run(main())
