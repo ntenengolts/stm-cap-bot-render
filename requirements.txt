@@ -1,6 +1,7 @@
-aiogram>=3.0.0b7,<4.0.0
+aiogram>=3.0
 python-dotenv
 google-api-python-client
 google-auth
 google-auth-oauthlib
+google-auth-httplib2
 pytz

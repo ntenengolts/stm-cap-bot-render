@@ -473,27 +473,3 @@ async def send_broadcast(message: Message):
 
     await message.answer(f"✅ Успешно отправлено: {success_count}/{len(recipients)}")
     log_broadcast(message.from_user.id, broadcast_text, success_count)
-
-
-# запуск через webhook
-async def on_startup(dispatcher: Dispatcher):
-    # ставим webhook
-    await bot.set_webhook(WEBHOOK_URL)
-
-async def on_shutdown(dispatcher: Dispatcher):
-    # снимаем webhook
-    await bot.delete_webhook()
-
-async def main():
-    print("Бот запущен на webhook!")
-    await dp.start_webhook(
-        bot,
-        webhook_path=WEBHOOK_PATH,
-        on_startup=on_startup,
-        on_shutdown=on_shutdown,
-        host=WEBAPP_HOST,
-        port=WEBAPP_PORT,
-    )
-
-if __name__ == "__main__":
-    asyncio.run(main())
